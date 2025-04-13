@@ -1,16 +1,22 @@
 package com.sbs.jdbc.text_board;
 
+import com.sbs.jdbc.text_board.boundedContext.article.dto.Article;
 import com.sbs.jdbc.text_board.container.Container;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
   public Scanner sc;
   public int lastId;
 
+  public List<Article> articles;
+
   public App() {
     sc = Container.sc;
     lastId = 0;
+    articles = new ArrayList<>();
   }
 
   public void run() {
@@ -40,6 +46,10 @@ public class App {
         }
 
         int id = ++lastId;
+
+        Article article = new Article(id, subject, content);
+        articles.add(article);
+        System.out.println("생성 된 게시물 객체 : " + article);
 
         System.out.printf("%d번 게시물이 생성되었습니다.\n", id);
       }
