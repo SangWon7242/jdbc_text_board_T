@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ArticleController {
-  public List<Article> articles;
+  private List<Article> articles;
 
   public ArticleController() {
     articles = new ArrayList<>();

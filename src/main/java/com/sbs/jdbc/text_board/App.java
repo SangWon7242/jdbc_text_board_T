@@ -35,7 +35,6 @@ public class App {
       System.out.println("== 프로그램을 종료합니다. ==");
       Container.sc.close();
     }
-
   }
 
   private void doAction(Rq rq) {

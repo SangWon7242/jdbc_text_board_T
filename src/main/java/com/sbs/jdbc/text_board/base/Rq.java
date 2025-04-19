@@ -1,19 +1,17 @@
 package com.sbs.jdbc.text_board.base;
 
+import lombok.Getter;
+
 import java.util.Map;
 
 public class Rq {
   private String url;
+
+  @Getter
   private Map<String, String> params;
+
+  @Getter
   private String urlPath;
-
-  public Map<String, String> getParams() {
-    return params;
-  }
-
-  public String getUrlPath() {
-    return urlPath;
-  }
 
   public void setCommand(String url) {
     this.url = url;
