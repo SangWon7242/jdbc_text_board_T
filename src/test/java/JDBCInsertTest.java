@@ -29,7 +29,6 @@ public class JDBCInsertTest {
 
       // 4. SQL 쿼리 준비
       // -> 통역사에게 전달할 메시지(SQL)를 준비합니다.
-      // -> ?는 나중에 채워넣을 값을 의미합니다.
       String sql = "INSERT INTO article";
       sql += " SET regDate = NOW()";
       sql += ", updateDate = NOW()";
