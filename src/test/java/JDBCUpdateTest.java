@@ -1,11 +1,9 @@
-import com.sbs.jdbc.text_board.boundedContext.article.dto.Article;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-public class JDBCSelectTest {
+public class JDBCUpdateTest {
   public static void main(String[] args) {
     // 1. 데이터베이스 연결 정보 설정
     // -> 마치 데이터베이스 서버의 주소와 비밀번호를 적는 것과 같습니다.
@@ -13,14 +11,8 @@ public class JDBCSelectTest {
     String username = "sbsst";     // 데이터베이스 계정
     String password = "sbs123414";  // 데이터베이스 비밀번호
 
-    // 데이터베이스 연결 객체
     Connection conn = null;
-    // SQL 실행을 위한 PreparedStatement 객체
     PreparedStatement pstmt = null;
-    // 조회 결과를 담을 ResultSet 객체
-    ResultSet rs = null;
-
-    List<Article> articles = new ArrayList<>();
 
     try {
       // 2. JDBC 드라이버 로드
@@ -33,11 +25,17 @@ public class JDBCSelectTest {
       conn = DriverManager.getConnection(url, username, password);
       System.out.println("데이터베이스 연결 성공!");
 
+      int id = 1;
+      String subject = "수정 제목";
+      String content = "수정 내용";
+
       // 4. SQL 쿼리 준비
       // -> 통역사에게 전달할 메시지(SQL)를 준비합니다.
-      String sql = "SELECT *";
-      sql += " FROM article";
-      sql += " ORDER BY id DESC";
+      String sql = "UPDATE article";
+      sql += " SET updateDate = NOW()";
+      sql += ", subject = '%s'".formatted(subject);
+      sql += ", content = '%s'".formatted(content);
+      sql += " WHERE id = %d".formatted(id);
 
       System.out.println(sql);
 
@@ -47,23 +45,11 @@ public class JDBCSelectTest {
 
       // 6. SQL 실행
       // -> 통역사를 통해 데이터베이스에 메시지를 전달합니다.
-      rs = pstmt.executeQuery();
+      int result = pstmt.executeUpdate();
 
-      // 5. 결과 처리
-      while (rs.next()) {
-        // ResultSet에서 각 컬럼의 값을 가져옴
-        int id = rs.getInt("id");
-        LocalDateTime regDate = rs.getTimestamp("regDate").toLocalDateTime();
-        LocalDateTime updateDate = rs.getTimestamp("updateDAte").toLocalDateTime();
-        String subject = rs.getString("subject");
-        String content = rs.getString("content");
+      System.out.printf("실행 된 결과 : %d\n", result);
 
-        Article article = new Article(id, regDate, updateDate, subject, content);
-        articles.add(article);
-      }
-
-      System.out.println("결과 : " + articles);
-
+      System.out.printf("%d번 게시물이 수정되었습니다.\n", id);
 
     } catch (ClassNotFoundException e) {
       // JDBC 드라이버를 찾지 못했을 때의 처리
@@ -75,7 +61,6 @@ public class JDBCSelectTest {
       e.printStackTrace();
     } finally {
       try {
-        if(rs != null && !rs.isClosed()) rs.close();
         if(pstmt != null && !pstmt.isClosed()) pstmt.close();
         if(conn != null && !conn.isClosed()) {
           conn.close();
