@@ -2,75 +2,55 @@ package com.sbs.jdbc.text_board;
 
 import com.sbs.jdbc.text_board.boundedContext.article.dto.Article;
 import com.sbs.jdbc.text_board.container.Container;
+import com.sbs.jdbc.text_board.dbUtil.MysqlUtil;
+import com.sbs.jdbc.text_board.dbUtil.SecSql;
 
-import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Map;
 
 public class App {
-  public Scanner sc;
-  public int lastId;
   public List<Article> articles;
 
-  final String url = "jdbc:mysql://127.0.0.1:3306/text_board?useSSL=false&autoReconnect=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&useUnicode=true&allowPublicKeyRetrieval=true";
-  final String username = "sbsst";     // 데이터베이스 계정
-  final String password = "sbs123414";  // 데이터베이스 비밀번호
-
-  Connection conn = null;
-  PreparedStatement pstmt = null;
-  ResultSet rs = null;
-
   public App() {
-    sc = Container.sc;
-    lastId = 0;
     articles = new ArrayList<>();
+  }
+
+  private static boolean isDevMode() {
+    // 이 부분을 false로 바꾸면 production 모드 이다.
+    // true는 개발자 모드이다.(개발할 때 좋다.)
+    return true;
   }
 
   public void run() {
     System.out.println("== 자바 텍스트 게시판 시작 ==");
 
-    while (true) {
-      System.out.print("명령어) ");
-      String cmd = sc.nextLine();
+    try {
+      while (true) {
+        System.out.print("명령어) ");
+        String cmd = Container.sc.nextLine();
 
-      try {
-        // 드라이버 로딩
-        Class.forName("com.mysql.cj.jdbc.Driver");
-
-        // DB 연결
-        conn = DriverManager.getConnection(url, username, password);
+        // DB 세팅
+        // root, ""
+        MysqlUtil.setDBInfo("localhost", "sbsst", "sbs123414", "text_board");
+        MysqlUtil.setDevMode(isDevMode());
+        // DB 끝
 
         doAction(cmd);
-
-      } catch (ClassNotFoundException e) {
-        // JDBC 드라이버를 찾지 못했을 때의 처리
-        System.out.println("DB 드라이버 로드 실패!");
-        e.printStackTrace();
-      } catch (SQLException e) {
-        // SQL 관련 오류가 발생했을 때의 처리
-        System.out.println("DB 연결 또는 SQL 실행 실패!");
-        e.printStackTrace();
-      } finally {
-        try {
-          if(conn != null && !conn.isClosed()) {
-            conn.close();
-            System.out.println("데이터베이스 연결 종료!");
-          }
-        } catch (SQLException e) {
-          e.printStackTrace();
-        }
       }
+    } finally {
+      System.out.println("== 프로그램을 종료합니다. ==");
+      Container.sc.close();
     }
+
   }
 
   private void doAction(String cmd) {
-    if(cmd.equals("/usr/article/write")) {
+    if (cmd.equals("/usr/article/write")) {
       System.out.println("== 게시물 작성 ==");
 
       System.out.print("제목 : ");
-      String subject = sc.nextLine();
+      String subject = Container.sc.nextLine();
 
       if (subject.trim().isEmpty()) {
         System.out.println("subject(을)를 입력해주세요.");
@@ -78,93 +58,50 @@ public class App {
       }
 
       System.out.print("내용 : ");
-      String content = sc.nextLine();
+      String content = Container.sc.nextLine();
 
       if (content.trim().isEmpty()) {
         System.out.println("content(을)를 입력해주세요.");
         return;
       }
 
-      try {
-        // 4. SQL 쿼리 준비
-        // -> 통역사에게 전달할 메시지(SQL)를 준비합니다.
-        String sql = "INSERT INTO article";
-        sql += " SET regDate = NOW()";
-        sql += ", updateDate = NOW()";
-        sql += ", subject = '%s'".formatted(subject);
-        sql += ", content = '%s'".formatted(content);
+      SecSql sql = new SecSql();
+      sql.append("INSERT INTO article");
+      sql.append("SET regDate = NOW()");
+      sql.append(", updateDate = NOW()");
+      sql.append(", subject = ?", subject);
+      sql.append(", content = ?", content);
 
-        System.out.println(sql);
+      int id = MysqlUtil.insert(sql);
 
-        System.out.println("게시물이 생성되었습니다.");
+      System.out.printf("%d번 게시물이 생성되었습니다.\n", id);
 
-        pstmt = conn.prepareStatement(sql);
+    } else if (cmd.equals("/usr/article/list")) {
 
-        // SQL 실행
-        pstmt.executeUpdate();
+      SecSql sql = new SecSql();
+      sql.append("SELECT *");
+      sql.append("FROM article");
+      sql.append("ORDER BY id DESC");
 
-      } catch (SQLException e) {
-        // SQL 관련 오류가 발생했을 때의 처리
-        System.out.println("DB 연결 또는 SQL 실행 실패!");
-        e.printStackTrace();
-      } finally {
-        try {
-          if(pstmt != null && !pstmt.isClosed()) pstmt.close();
-        } catch (SQLException e) {
-          e.printStackTrace();
-        }
-      }
-    }
-    else if(cmd.equals("/usr/article/list")) {
-      try {
-        String sql = "SELECT *";
-        sql += " FROM article";
-        sql += " ORDER BY id DESC";
+      List<Map<String, Object>> articleListMap = MysqlUtil.selectRows(sql);
 
-        System.out.println(sql);
-
-        pstmt = conn.prepareStatement(sql);
-        rs = pstmt.executeQuery();
-
-        // 결과 처리
-        while (rs.next()) {
-          int id = rs.getInt("id");
-          LocalDateTime regDate = rs.getTimestamp("regDate").toLocalDateTime();
-          LocalDateTime updateDate = rs.getTimestamp("updateDAte").toLocalDateTime();
-          String subject = rs.getString("subject");
-          String content = rs.getString("content");
-
-          Article article = new Article(id, regDate, updateDate, subject, content);
-          articles.add(article);
-        }
-
-        System.out.println("== 게시물 리스트 ==");
-        System.out.println("제목 | 내용");
-        articles.forEach(
-            article -> System.out.printf("%d | %s\n", article.getId(), article.getSubject())
-        );
-
-
-      } catch (SQLException e) {
-        // SQL 관련 오류가 발생했을 때의 처리
-        System.out.println("DB 연결 또는 SQL 실행 실패!");
-        e.printStackTrace();
-      } finally {
-        try {
-          if(rs != null && !rs.isClosed()) rs.close();
-          if(pstmt != null && !pstmt.isClosed()) pstmt.close();
-        } catch (SQLException e) {
-          e.printStackTrace();
-        }
+      if(articleListMap.isEmpty()) {
+        System.out.println("게시물이 존재하지 않습니다.");
+        return;
       }
 
-    }
-    else if(cmd.equals("exit")) {
+      System.out.println("== 게시물 리스트 ==");
+      System.out.println("제목 | 내용");
+      articleListMap.forEach(
+          articleMap
+              -> System.out.printf("%d | %s\n", (int) articleMap.get("id"), articleMap.get("subject"))
+      );
+    } else if (cmd.equals("exit")) {
       System.out.println("프로그램을 종료합니다.");
       System.exit(0); // 프로그램 강제종룔
-    }
-    else {
+    } else {
       System.out.println("잘못 입력 된 명령어입니다.");
     }
   }
 }
+
