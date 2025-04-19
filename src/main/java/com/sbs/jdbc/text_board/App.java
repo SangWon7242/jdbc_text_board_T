@@ -3,10 +3,8 @@ package com.sbs.jdbc.text_board;
 import com.sbs.jdbc.text_board.boundedContext.article.dto.Article;
 import com.sbs.jdbc.text_board.container.Container;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -32,6 +30,7 @@ public class App {
 
     Connection conn = null;
     PreparedStatement pstmt = null;
+    ResultSet rs = null;
     
     while (true) {
       System.out.print("명령어) ");
@@ -112,7 +111,75 @@ public class App {
         System.out.printf("%d번 게시물이 생성되었습니다.\n", id);
       }
       else if(cmd.equals("/usr/article/list")) {
-        System.out.println("== 게시물 리스트 ==");
+        try {
+          // 2. JDBC 드라이버 로드
+          // -> 통역사를 부르는 과정이라고 생각하면 됩니다.
+          Class.forName("com.mysql.cj.jdbc.Driver");
+          System.out.println("드라이버 로드 성공!");
+
+          // 3. 데이터베이스 연결
+          // -> 통역사를 통해 데이터베이스와 대화할 수 있는 상태를 만듭니다.
+          conn = DriverManager.getConnection(url, username, password);
+          System.out.println("데이터베이스 연결 성공!");
+
+          // 4. SQL 쿼리 준비
+          // -> 통역사에게 전달할 메시지(SQL)를 준비합니다.
+          String sql = "SELECT *";
+          sql += " FROM article";
+          sql += " ORDER BY id DESC";
+
+          System.out.println(sql);
+
+          // 5. PreparedStatement 생성
+          // -> 준비한 SQL 메시지를 통역사에게 전달할 준비를 합니다.
+          pstmt = conn.prepareStatement(sql);
+
+          // 6. SQL 실행
+          // -> 통역사를 통해 데이터베이스에 메시지를 전달합니다.
+          rs = pstmt.executeQuery();
+
+          // 5. 결과 처리
+          while (rs.next()) {
+            // ResultSet에서 각 컬럼의 값을 가져옴
+            int id = rs.getInt("id");
+            LocalDateTime regDate = rs.getTimestamp("regDate").toLocalDateTime();
+            LocalDateTime updateDate = rs.getTimestamp("updateDAte").toLocalDateTime();
+            String subject = rs.getString("subject");
+            String content = rs.getString("content");
+
+            Article article = new Article(id, regDate, updateDate, subject, content);
+            articles.add(article);
+          }
+
+          // System.out.println("결과 : " + articles);
+
+          System.out.println("== 게시물 리스트 ==");
+          System.out.println("제목 | 내용");
+          articles.forEach(
+              article -> System.out.printf("%d | %s\n", article.getId(), article.getSubject())
+          );
+
+
+        } catch (ClassNotFoundException e) {
+          // JDBC 드라이버를 찾지 못했을 때의 처리
+          System.out.println("DB 드라이버 로드 실패!");
+          e.printStackTrace();
+        } catch (SQLException e) {
+          // SQL 관련 오류가 발생했을 때의 처리
+          System.out.println("DB 연결 또는 SQL 실행 실패!");
+          e.printStackTrace();
+        } finally {
+          try {
+            if(pstmt != null && !pstmt.isClosed()) pstmt.close();
+            if(conn != null && !conn.isClosed()) {
+              conn.close();
+              System.out.println("데이터베이스 연결 종료!");
+            }
+          } catch (SQLException e) {
+            e.printStackTrace();
+          }
+        }
+
       }
       else if(cmd.equals("exit")) {
         System.out.println("프로그램을 종료합니다.");
