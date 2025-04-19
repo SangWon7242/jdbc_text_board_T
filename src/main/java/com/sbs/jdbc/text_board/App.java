@@ -1,5 +1,6 @@
 package com.sbs.jdbc.text_board;
 
+import com.sbs.jdbc.text_board.base.Rq;
 import com.sbs.jdbc.text_board.boundedContext.article.dto.Article;
 import com.sbs.jdbc.text_board.container.Container;
 import com.sbs.jdbc.text_board.dbUtil.MysqlUtil;
@@ -30,13 +31,16 @@ public class App {
         System.out.print("명령어) ");
         String cmd = Container.sc.nextLine();
 
+        Rq rq = new Rq();
+        rq.setCommand(cmd);
+
         // DB 세팅
         // root, ""
         MysqlUtil.setDBInfo("localhost", "sbsst", "sbs123414", "text_board");
         MysqlUtil.setDevMode(isDevMode());
         // DB 끝
 
-        doAction(cmd);
+        doAction(rq);
       }
     } finally {
       System.out.println("== 프로그램을 종료합니다. ==");
@@ -45,8 +49,8 @@ public class App {
 
   }
 
-  private void doAction(String cmd) {
-    if (cmd.equals("/usr/article/write")) {
+  private void doAction(Rq rq) {
+    if (rq.getUrlPath().equals("/usr/article/write")) {
       System.out.println("== 게시물 작성 ==");
 
       System.out.print("제목 : ");
@@ -76,8 +80,7 @@ public class App {
 
       System.out.printf("%d번 게시물이 생성되었습니다.\n", id);
 
-    } else if (cmd.equals("/usr/article/list")) {
-
+    } else if (rq.getUrlPath().equals("/usr/article/list")) {
       SecSql sql = new SecSql();
       sql.append("SELECT *");
       sql.append("FROM article");
@@ -96,7 +99,7 @@ public class App {
           articleMap
               -> System.out.printf("%d | %s\n", (int) articleMap.get("id"), articleMap.get("subject"))
       );
-    } else if (cmd.equals("exit")) {
+    } else if (rq.getUrlPath().equals("exit")) {
       System.out.println("프로그램을 종료합니다.");
       System.exit(0); // 프로그램 강제종룔
     } else {
