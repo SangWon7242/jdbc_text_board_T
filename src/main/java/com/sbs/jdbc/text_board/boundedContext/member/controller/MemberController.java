@@ -8,6 +8,7 @@ import com.sbs.jdbc.text_board.dbUtil.SecSql;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MemberController {
   private List<Member> members;
@@ -31,6 +32,22 @@ public class MemberController {
       
       if(username.trim().isEmpty()) {
         System.out.println("로그인 아이디를 입력해주세요.");
+        continue;
+      }
+
+      // 입력한 로그인 아이디에 대한 중복을 확인!!!
+      // 중복되었는지에 대한 쿼리를 DB 날림!!
+      // 결과를 받아와서 있는지 없는지 확인
+      // MysqlUtil에 있는 selectRow 함수 사용
+      SecSql sql = new SecSql();
+      sql.append("SELECT *");
+      sql.append("FROM `member`");
+      sql.append("WHERE username = ?", username);
+
+      Map<String, Object> memberMap = MysqlUtil.selectRow(sql);
+
+      if(!memberMap.isEmpty()) {
+        System.out.printf("'%s'(은)는 이미 가입된 로그인 아이디입니다.\n", username);
         continue;
       }
       
