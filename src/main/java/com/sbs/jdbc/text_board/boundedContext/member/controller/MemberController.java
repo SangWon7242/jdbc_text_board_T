@@ -2,19 +2,14 @@ package com.sbs.jdbc.text_board.boundedContext.member.controller;
 
 import com.sbs.jdbc.text_board.base.Rq;
 import com.sbs.jdbc.text_board.boundedContext.member.dto.Member;
+import com.sbs.jdbc.text_board.boundedContext.member.service.MemberService;
 import com.sbs.jdbc.text_board.container.Container;
-import com.sbs.jdbc.text_board.dbUtil.MysqlUtil;
-import com.sbs.jdbc.text_board.dbUtil.SecSql;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class MemberController {
-  private List<Member> members;
+  private MemberService memberService;
 
   public MemberController() {
-     members = new ArrayList<>();
+    memberService = Container.memberService;
   }
 
   public void doJoin(Rq rq) {
@@ -22,6 +17,7 @@ public class MemberController {
     String password;
     String passwordConfirm;
     String name;
+    Member member;
     
     System.out.println("== 회원 가입 ==");
     
@@ -35,22 +31,13 @@ public class MemberController {
         continue;
       }
 
-      // 입력한 로그인 아이디에 대한 중복을 확인!!!
-      // 중복되었는지에 대한 쿼리를 DB 날림!!
-      // 결과를 받아와서 있는지 없는지 확인
-      // MysqlUtil에 있는 selectRow 함수 사용
-      SecSql sql = new SecSql();
-      sql.append("SELECT *");
-      sql.append("FROM `member`");
-      sql.append("WHERE username = ?", username);
+      member = memberService.findByUsername(username);
 
-      Map<String, Object> memberMap = MysqlUtil.selectRow(sql);
-
-      if(!memberMap.isEmpty()) {
+      if(member != null) {
         System.out.printf("'%s'(은)는 이미 가입된 로그인 아이디입니다.\n", username);
         continue;
       }
-      
+
       break;
     }
 
@@ -97,15 +84,7 @@ public class MemberController {
       break;
     }
 
-    SecSql sql = new SecSql();
-    sql.append("INSERT INTO `member`");
-    sql.append("SET regDate = NOW()");
-    sql.append(", updateDate = NOW()");
-    sql.append(", username = ?", username);
-    sql.append(", password = ?", password);
-    sql.append(", name = ?", name);
-
-    int id = MysqlUtil.insert(sql);
+    int id = memberService.join(username, password, name);
 
     System.out.printf("'%s'님 회원가입 되었습니다.\n", name);
   }
