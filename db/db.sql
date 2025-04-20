@@ -26,3 +26,6 @@ content = '내용';
 # 게시물 데이터 조회
 SELECT *
 FROM article;
+
+# 게시물 데이터 초기화(데이터 추가시 1번 부터 시작)
+TRUNCATE article;
