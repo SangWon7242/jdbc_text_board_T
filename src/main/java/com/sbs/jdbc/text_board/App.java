@@ -2,6 +2,7 @@ package com.sbs.jdbc.text_board;
 
 import com.sbs.jdbc.text_board.base.Rq;
 import com.sbs.jdbc.text_board.boundedContext.article.controller.ArticleController;
+import com.sbs.jdbc.text_board.boundedContext.member.controller.MemberController;
 import com.sbs.jdbc.text_board.container.Container;
 import com.sbs.jdbc.text_board.dbUtil.MysqlUtil;
 
@@ -39,6 +40,7 @@ public class App {
 
   private void doAction(Rq rq) {
     ArticleController articleController = Container.articleController;
+    MemberController memberController = Container.memberController;
 
     if (rq.getUrlPath().equals("/usr/article/write")) {
       articleController.doWrite();
@@ -50,6 +52,8 @@ public class App {
       articleController.doModify(rq);
     } else if (rq.getUrlPath().equals("/usr/article/delete")) {
       articleController.doDelete(rq);
+    } else if (rq.getUrlPath().equals("/usr/member/join")) {
+      memberController.doJoin(rq);
     } else if (rq.getUrlPath().equals("exit")) {
       System.out.println("프로그램을 종료합니다.");
       System.exit(0); // 프로그램 강제종룔
