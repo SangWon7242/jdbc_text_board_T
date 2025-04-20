@@ -29,3 +29,11 @@ FROM article;
 
 # 게시물 데이터 초기화(데이터 추가시 1번 부터 시작)
 TRUNCATE article;
+
+# 날짜 출력 포맷 변경
+SELECT A.id,
+DATE_FORMAT(A.regDate, '%Y-%m-%d %H:%i:%s') AS regDate,
+DATE_FORMAT(A.updateDate, '%Y-%m-%d %H:%i:%s') AS updateDate,
+A.subject,
+A.content
+FROM article AS A;

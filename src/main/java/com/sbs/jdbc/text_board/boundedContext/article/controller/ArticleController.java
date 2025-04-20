@@ -4,12 +4,8 @@ import com.sbs.jdbc.text_board.base.Rq;
 import com.sbs.jdbc.text_board.boundedContext.article.dto.Article;
 import com.sbs.jdbc.text_board.boundedContext.article.service.ArticleService;
 import com.sbs.jdbc.text_board.container.Container;
-import com.sbs.jdbc.text_board.dbUtil.MysqlUtil;
-import com.sbs.jdbc.text_board.dbUtil.SecSql;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ArticleController {
   private ArticleService articleService;

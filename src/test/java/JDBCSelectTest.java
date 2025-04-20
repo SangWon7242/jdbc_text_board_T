@@ -53,8 +53,12 @@ public class JDBCSelectTest {
       while (rs.next()) {
         // ResultSet에서 각 컬럼의 값을 가져옴
         int id = rs.getInt("id");
+        /*
         LocalDateTime regDate = rs.getTimestamp("regDate").toLocalDateTime();
         LocalDateTime updateDate = rs.getTimestamp("updateDAte").toLocalDateTime();
+        */
+        String regDate = rs.getString("regDate");
+        String updateDate = rs.getString("updateDate");
         String subject = rs.getString("subject");
         String content = rs.getString("content");
 

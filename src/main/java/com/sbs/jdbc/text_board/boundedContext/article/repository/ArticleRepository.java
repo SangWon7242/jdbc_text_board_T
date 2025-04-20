@@ -30,8 +30,12 @@ public class ArticleRepository {
 
   public List<Article> findAll() {
     SecSql sql = new SecSql();
-    sql.append("SELECT *");
-    sql.append("FROM article");
+    sql.append("SELECT A.id,");
+    sql.append("DATE_FORMAT(A.regDate, '%Y-%m-%d %H:%i:%s') AS regDate,");
+    sql.append("DATE_FORMAT(A.updateDate, '%Y-%m-%d %H:%i:%s') AS updateDate,");
+    sql.append("A.subject,");
+    sql.append("A.content");
+    sql.append("FROM article AS A");
     sql.append("ORDER BY id DESC");
 
     List<Map<String, Object>> articleListMap = MysqlUtil.selectRows(sql);
@@ -47,8 +51,12 @@ public class ArticleRepository {
 
   public Article findById(int id) {
     SecSql sql = new SecSql();
-    sql.append("SELECT *");
-    sql.append("FROM article");
+    sql.append("SELECT A.id,");
+    sql.append("DATE_FORMAT(A.regDate, '%Y-%m-%d %H:%i:%s') AS regDate,");
+    sql.append("DATE_FORMAT(A.updateDate, '%Y-%m-%d %H:%i:%s') AS updateDate,");
+    sql.append("A.subject,");
+    sql.append("A.content");
+    sql.append("FROM article AS A");
     sql.append("WHERE id = ?", id);
 
     Map<String, Object> articleMap = MysqlUtil.selectRow(sql);
