@@ -97,18 +97,67 @@ public class ArticleController implements Controller {
   }
 
   public void showList(Rq rq) {
-    List<Article> articles = articleService.findAll();
+    // 게시판 목록 출력
+    List<Board> boards = boardService.findAll();
 
-    if (articles.isEmpty()) {
-      System.out.println("게시물이 존재하지 않습니다.");
+    if (boards.isEmpty()) {
+      System.out.println("등록된 게시판이 없습니다.");
       return;
     }
 
-    System.out.println("== 게시물 리스트 ==");
-    System.out.println("번호 | 제목 | 작성 날짜 | 작성자 | 조회수");
+    System.out.println("== 게시판 목록 ==");
+    System.out.println("번호 | 이름 | 코드");
+    System.out.println("-".repeat(30));
+
+    // 전체 게시물 보기 옵션 추가
+    System.out.println("0 | 전체 게시물 | ALL");
+
+    // 게시판 목록 출력
+    boards.forEach(
+        board -> System.out.printf("%d | %s | %s\n",
+            board.getId(),
+            board.getName(),
+            board.getCode())
+    );
+
+    System.out.print("게시판 번호를 선택해주세요 (전체: 0) : ");
+    int boardId = Integer.parseInt(Container.sc.nextLine().trim());
+
+    List<Article> articles;
+    String boardName = "전체";
+
+    if(boardId == 0) {
+      articles = articleService.findAll();
+    }
+    else {
+      // 선택한 게시판 확인
+      Board selectedBoard = boardService.findById(boardId);
+      if (selectedBoard == null) {
+        System.out.println("존재하지 않는 게시판입니다.");
+        return;
+      }
+
+      // 선택한 게시판의 게시물만 조회
+      articles = articleService.findByBoardId(boardId);
+      boardName = selectedBoard.getName();
+    }
+
+    if (articles.isEmpty()) {
+      if (boardId == 0) {
+        System.out.println("게시물이 존재하지 않습니다.");
+      } else {
+        System.out.printf("%s 게시판에 게시물이 존재하지 않습니다.\n", boardName);
+      }
+      return;
+    }
+
+    System.out.printf("== %s 게시판 리스트 ==\n", boardName);
+    System.out.println("번호 | 게시판 | 제목 | 작성 날짜 | 작성자 | 조회수");
+    System.out.println("-".repeat(70));
+
     articles.forEach(
         article
-            -> System.out.printf("%d | %s | %s | %s | %d\n", article.getId(), article.getSubject(), article.getFormatRegDate(), article.getWriterName(), article.getHit())
+            -> System.out.printf("%d | %s | %s | %s | %s | %d\n", article.getId(), article.getBoardName(), article.getSubject(), article.getFormatRegDate(), article.getWriterName(), article.getHit())
     );
   }
 

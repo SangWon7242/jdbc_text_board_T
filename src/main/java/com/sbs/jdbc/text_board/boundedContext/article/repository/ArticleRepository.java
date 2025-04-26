@@ -9,12 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public class ArticleRepository {
-  private List<Article> articles;
-
-  public ArticleRepository() {
-    articles = new ArrayList<>();
-  }
-
   public int write(int memberId, int boardId, String subject, String content, int hit) {
     SecSql sql = new SecSql();
     sql.append("INSERT INTO article");
@@ -31,17 +25,26 @@ public class ArticleRepository {
     return id;
   }
 
-  public List<Article> findAll() {
+  public List<Article> findAll(Integer boardId) {
     SecSql sql = new SecSql();
-    sql.append("SELECT A.*, M.name AS writerName");
+    sql.append("SELECT A.*, M.name AS writerName, B.name AS boardName");
     sql.append("FROM article AS A");
     sql.append("INNER JOIN `member` AS M");
     sql.append("ON A.memberId = M.id");
-    sql.append("ORDER BY id DESC");
+    sql.append("INNER JOIN board AS B");
+    sql.append("ON A.boardId = B.id");
+
+    if (boardId != null) {
+      sql.append("WHERE A.boardId = ?", boardId);
+    }
+
+    sql.append("ORDER BY A.id DESC");
 
     List<Map<String, Object>> articleListMap = MysqlUtil.selectRows(sql);
 
     if(articleListMap.isEmpty()) return null;
+
+    List<Article> articles = new ArrayList<>();
 
     for(Map<String, Object> articleMap : articleListMap) {
       articles.add(new Article(articleMap));
@@ -52,10 +55,12 @@ public class ArticleRepository {
 
   public Article findById(int id) {
     SecSql sql = new SecSql();
-    sql.append("SELECT A.*, M.name AS writerName");
+    sql.append("SELECT A.*, M.name AS writerName, B.name AS boardName");
     sql.append("FROM article AS A");
     sql.append("INNER JOIN `member` AS M");
     sql.append("ON A.memberId = M.id");
+    sql.append("INNER JOIN board AS B");
+    sql.append("ON A.boardId = B.id");
     sql.append("WHERE A.id = ?", id);
 
     Map<String, Object> articleMap = MysqlUtil.selectRow(sql);
@@ -94,4 +99,6 @@ public class ArticleRepository {
 
     MysqlUtil.update(sql);
   }
+
+
 }

@@ -10,12 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public class BoardRepository {
-  private List<Board> boards;
-
-  public BoardRepository() {
-    boards = new ArrayList<>();
-  }
-
   public void makeBoard(String code, String name) {
     SecSql sql = new SecSql();
     sql.append("INSERT INTO board");
@@ -62,6 +56,8 @@ public class BoardRepository {
     List<Map<String, Object>> boardListMap = MysqlUtil.selectRows(sql);
 
     if(boardListMap.isEmpty()) return null;
+
+    List<Board> boards = new ArrayList<>();
 
     for(Map<String, Object> boardMap : boardListMap) {
       boards.add(new Board(boardMap));

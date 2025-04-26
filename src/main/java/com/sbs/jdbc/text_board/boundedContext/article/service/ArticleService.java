@@ -18,7 +18,11 @@ public class ArticleService {
   }
 
   public List<Article> findAll() {
-    return articleRepository.findAll();
+    return articleRepository.findAll(null);
+  }
+
+  public List<Article> findByBoardId(int boardId) {
+    return articleRepository.findAll(boardId);  // boardId를 전달하여 특정 게시판 조회
   }
 
   public Article findById(int id) {
