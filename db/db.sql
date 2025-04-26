@@ -98,3 +98,14 @@ password = '1234',
 name = '양금명';
 
 SELECT * FROM `member`;
+
+# 작성자 이름으로 테이블 조회
+SELECT A.id,
+DATE_FORMAT(A.regDate, '%Y-%m-%d %H:%i:%s') AS regDate,
+DATE_FORMAT(A.updateDate, '%Y-%m-%d %H:%i:%s') AS updateDate,
+A.subject,
+A.content,
+M.name AS writerName
+FROM article AS A
+INNER JOIN `member` AS M
+ON A.memberId = M.id;

@@ -34,9 +34,13 @@ public class ArticleRepository {
     sql.append("SELECT A.id,");
     sql.append("DATE_FORMAT(A.regDate, '%Y-%m-%d %H:%i:%s') AS regDate,");
     sql.append("DATE_FORMAT(A.updateDate, '%Y-%m-%d %H:%i:%s') AS updateDate,");
+    sql.append("A.memberId,");
     sql.append("A.subject,");
-    sql.append("A.content");
+    sql.append("A.content,");
+    sql.append("M.name AS writerName");
     sql.append("FROM article AS A");
+    sql.append("INNER JOIN `member` AS M");
+    sql.append("ON A.memberId = M.id");
     sql.append("ORDER BY id DESC");
 
     List<Map<String, Object>> articleListMap = MysqlUtil.selectRows(sql);
@@ -55,10 +59,14 @@ public class ArticleRepository {
     sql.append("SELECT A.id,");
     sql.append("DATE_FORMAT(A.regDate, '%Y-%m-%d %H:%i:%s') AS regDate,");
     sql.append("DATE_FORMAT(A.updateDate, '%Y-%m-%d %H:%i:%s') AS updateDate,");
+    sql.append("A.memberId,");
     sql.append("A.subject,");
-    sql.append("A.content");
+    sql.append("A.content,");
+    sql.append("M.name AS writerName");
     sql.append("FROM article AS A");
-    sql.append("WHERE id = ?", id);
+    sql.append("INNER JOIN `member` AS M");
+    sql.append("ON A.memberId = M.id");
+    sql.append("WHERE A.id = ?", id);
 
     Map<String, Object> articleMap = MysqlUtil.selectRow(sql);
 
