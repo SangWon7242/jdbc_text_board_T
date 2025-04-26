@@ -2,7 +2,7 @@ package com.sbs.jdbc.text_board.boundedContext.article.controller;
 
 import com.sbs.jdbc.text_board.boundedContext.board.boardService.BoardService;
 import com.sbs.jdbc.text_board.boundedContext.board.dto.Board;
-import com.sbs.jdbc.text_board.boundedContext.common.Controller;
+import com.sbs.jdbc.text_board.boundedContext.common.controller.Controller;
 import com.sbs.jdbc.text_board.boundedContext.member.dto.Member;
 import com.sbs.jdbc.text_board.global.base.Rq;
 import com.sbs.jdbc.text_board.boundedContext.article.dto.Article;
@@ -108,7 +108,7 @@ public class ArticleController implements Controller {
     System.out.println("번호 | 제목 | 작성 날짜 | 작성자 | 조회수");
     articles.forEach(
         article
-            -> System.out.printf("%d | %s | %s | %s | %d\n", article.getId(), article.getSubject(), article.getRegDate(), article.getWriterName(), article.getHit())
+            -> System.out.printf("%d | %s | %s | %s | %d\n", article.getId(), article.getSubject(), article.getFormatRegDate(), article.getWriterName(), article.getHit())
     );
   }
 
@@ -131,8 +131,8 @@ public class ArticleController implements Controller {
     System.out.printf("== %d번 게시물 상세보기 ==\n", id);
     System.out.printf("번호 : %d\n", article.getId());
     System.out.printf("작성자 : %s\n", article.getWriterName());
-    System.out.printf("작성날짜 : %s\n", article.getRegDate());
-    System.out.printf("수정날짜 : %s\n", article.getUpdateDate());
+    System.out.printf("작성날짜 : %s\n", article.getFormatRegDate());
+    System.out.printf("수정날짜 : %s\n", article.getFormatUpdateDate());
     System.out.printf("조회수 : %d\n", article.getHit());
     System.out.printf("제목 : %s\n", article.getSubject());
     System.out.printf("내용 : %s\n", article.getContent());

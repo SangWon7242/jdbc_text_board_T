@@ -1,4 +1,4 @@
-package com.sbs.jdbc.text_board.boundedContext.common;
+package com.sbs.jdbc.text_board.boundedContext.common.controller;
 
 import com.sbs.jdbc.text_board.global.base.Rq;
 

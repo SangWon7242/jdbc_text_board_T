@@ -1,6 +1,6 @@
 package com.sbs.jdbc.text_board;
 
-import com.sbs.jdbc.text_board.boundedContext.common.Controller;
+import com.sbs.jdbc.text_board.boundedContext.common.controller.Controller;
 import com.sbs.jdbc.text_board.boundedContext.member.dto.Member;
 import com.sbs.jdbc.text_board.container.Container;
 import com.sbs.jdbc.text_board.global.base.Rq;
