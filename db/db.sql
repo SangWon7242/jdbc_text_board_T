@@ -16,24 +16,39 @@ CREATE TABLE article (
 	content TEXT NOT NULL
 );
 
+# 게시물 테이블에 memberId 칼럼 추가
+ALTER TABLE article ADD COLUMN memberId INT UNSIGNED NOT NULL AFTER updateDate;
+
+DESC article;
+
 # 게시물 테스트 데이터 추가
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
+memberId = 1,
 subject = '제목1',
 content = '내용1';
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
+memberId = 1,
 subject = '제목2',
 content = '내용2';
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
+memberId = 1,
 subject = '제목3',
 content = '내용3';
+
+INSERT INTO article
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 2,
+subject = '제목4',
+content = '내용4';
 
 # 게시물 데이터 조회
 SELECT *

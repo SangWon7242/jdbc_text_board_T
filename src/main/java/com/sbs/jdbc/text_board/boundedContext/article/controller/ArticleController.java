@@ -1,5 +1,6 @@
 package com.sbs.jdbc.text_board.boundedContext.article.controller;
 
+import com.sbs.jdbc.text_board.boundedContext.member.dto.Member;
 import com.sbs.jdbc.text_board.global.base.Rq;
 import com.sbs.jdbc.text_board.boundedContext.article.dto.Article;
 import com.sbs.jdbc.text_board.boundedContext.article.service.ArticleService;
@@ -14,7 +15,12 @@ public class ArticleController {
     articleService = Container.articleService;
   }
 
-  public void doWrite() {
+  public void doWrite(Rq rq) {
+    if(rq.isLogouted()) {
+      System.out.println("로그인 후 이용해주세요.");
+      return;
+    }
+
     System.out.println("== 게시물 작성 ==");
 
     System.out.print("제목 : ");
@@ -33,12 +39,15 @@ public class ArticleController {
       return;
     }
 
-    int id = articleService.write(subject, content);
+    Member member = rq.getLoginedMember();
+    int memberId = member.getId();
+
+    int id = articleService.write(memberId, subject, content);
 
     System.out.printf("%d번 게시물이 생성되었습니다.\n", id);
   }
 
-  public void showList() {
+  public void showList(Rq rq) {
     List<Article> articles = articleService.findAll();
 
     if (articles.isEmpty()) {

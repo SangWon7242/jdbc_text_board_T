@@ -52,9 +52,9 @@ public class App {
     MemberController memberController = Container.memberController;
 
     if (rq.getUrlPath().equals("/usr/article/write")) {
-      articleController.doWrite();
+      articleController.doWrite(rq);
     } else if (rq.getUrlPath().equals("/usr/article/list")) {
-      articleController.showList();
+      articleController.showList(rq);
     } else if (rq.getUrlPath().equals("/usr/article/detail")) {
       articleController.showDetail(rq);
     } else if (rq.getUrlPath().equals("/usr/article/modify")) {
