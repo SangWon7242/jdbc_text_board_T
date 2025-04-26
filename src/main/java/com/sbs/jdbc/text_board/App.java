@@ -1,5 +1,6 @@
 package com.sbs.jdbc.text_board;
 
+import com.sbs.jdbc.text_board.boundedContext.common.Controller;
 import com.sbs.jdbc.text_board.boundedContext.member.dto.Member;
 import com.sbs.jdbc.text_board.global.base.Rq;
 import com.sbs.jdbc.text_board.boundedContext.article.controller.ArticleController;
@@ -24,6 +25,7 @@ public class App {
         Member member = rq.getLoginedMember();
 
         String promptName = "명령어";
+        
         if(member != null) {
           promptName = member.getUsername();
         }
@@ -31,15 +33,25 @@ public class App {
         System.out.printf("%s) ", promptName);
         String cmd = Container.sc.nextLine();
 
-        rq.setCommand(cmd);
+        if(cmd.equals("exit")) {
+          break;
+        }
+
+        rq.setCommand(cmd); // 명령어 전달
 
         // DB 세팅
-        // root, ""
-        MysqlUtil.setDBInfo("localhost", "sbsst", "sbs123414", "text_board");
+        MysqlUtil.setDBInfo("localhost", "root", "", "text_board");
         MysqlUtil.setDevMode(isDevMode());
         // DB 끝
 
-        doAction(rq);
+        rq.getActionPath();
+
+        Controller controller = getControllerByRequestUri(rq);
+
+        if(controller != null) {
+          controller.performAction(rq);
+        }
+
       }
     } finally {
       System.out.println("== 프로그램을 종료합니다. ==");
@@ -47,34 +59,20 @@ public class App {
     }
   }
 
-  private void doAction(Rq rq) {
-    ArticleController articleController = Container.articleController;
-    MemberController memberController = Container.memberController;
-
-    if (rq.getUrlPath().equals("/usr/article/write")) {
-      articleController.doWrite(rq);
-    } else if (rq.getUrlPath().equals("/usr/article/list")) {
-      articleController.showList(rq);
-    } else if (rq.getUrlPath().equals("/usr/article/detail")) {
-      articleController.showDetail(rq);
-    } else if (rq.getUrlPath().equals("/usr/article/modify")) {
-      articleController.doModify(rq);
-    } else if (rq.getUrlPath().equals("/usr/article/delete")) {
-      articleController.doDelete(rq);
-    } else if (rq.getUrlPath().equals("/usr/member/join")) {
-      memberController.doJoin(rq);
-    } else if (rq.getUrlPath().equals("/usr/member/login")) {
-      memberController.doLogin(rq);
-    } else if (rq.getUrlPath().equals("/usr/member/logout")) {
-      memberController.doLogout(rq);
-    } else if (rq.getUrlPath().equals("/usr/member/mypage")) {
-      memberController.showMyPage(rq);
-    } else if (rq.getUrlPath().equals("exit")) {
-      System.out.println("프로그램을 종료합니다.");
-      System.exit(0); // 프로그램 강제종룔
-    } else {
-      System.out.println("잘못 입력 된 명령어입니다.");
+  private Controller getControllerByRequestUri(Rq rq) {
+    switch (rq.getControllerTypeCode()) {
+      case "usr":
+        switch (rq.getControllerName()) {
+          case "article":
+            return Container.articleController;
+          case "member":
+            return Container.memberController;
+        }
+      case "exit":
+        System.out.println("프로그램을 종료합니다.");
     }
+
+    return null;
   }
 }
 

@@ -1,5 +1,6 @@
 package com.sbs.jdbc.text_board.boundedContext.article.controller;
 
+import com.sbs.jdbc.text_board.boundedContext.common.Controller;
 import com.sbs.jdbc.text_board.boundedContext.member.dto.Member;
 import com.sbs.jdbc.text_board.global.base.Rq;
 import com.sbs.jdbc.text_board.boundedContext.article.dto.Article;
@@ -8,11 +9,28 @@ import com.sbs.jdbc.text_board.container.Container;
 
 import java.util.List;
 
-public class ArticleController {
+public class ArticleController implements Controller {
   private ArticleService articleService;
 
   public ArticleController() {
     articleService = Container.articleService;
+  }
+
+  @Override
+  public void performAction(Rq rq) {
+    if (rq.getActionPath().equals("/usr/article/write")) {
+      doWrite(rq);
+    } else if (rq.getActionPath().equals("/usr/article/list")) {
+      showList(rq);
+    } else if (rq.getActionPath().equals("/usr/article/detail")) {
+      showDetail(rq);
+    } else if (rq.getActionPath().equals("/usr/article/modify")) {
+      doModify(rq);
+    } else if (rq.getActionPath().equals("/usr/article/delete")) {
+      doDelete(rq);
+    } else {
+      System.out.println("존재하지 않는 명령어입니다.");
+    }
   }
 
   public void doWrite(Rq rq) {

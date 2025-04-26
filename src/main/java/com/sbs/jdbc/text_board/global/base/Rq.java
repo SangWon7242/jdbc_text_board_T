@@ -5,7 +5,9 @@ import com.sbs.jdbc.text_board.global.session.Session;
 import com.sbs.jdbc.text_board.global.util.Util;
 import com.sbs.jdbc.text_board.container.Container;
 import lombok.Getter;
+import lombok.Setter;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class Rq {
@@ -22,6 +24,18 @@ public class Rq {
 
   private String loginedMember = "loginedMember";
 
+  @Setter
+  @Getter
+  String controllerTypeCode;
+
+  @Setter
+  @Getter
+  String controllerName;
+
+  @Setter
+  @Getter
+  String actionMethodName;
+
   public Rq() {
     session = Container.session;
   }
@@ -30,6 +44,16 @@ public class Rq {
     this.url = url;
     params = Util.getParamsFromUrl(this.url);
     urlPath = Util.getPathFromUrl(this.url);
+  }
+
+  public String getActionPath() {
+    String[] commandBits = urlPath.split("/");
+
+    controllerTypeCode = commandBits[1];
+    controllerName = commandBits[2];
+    actionMethodName = commandBits[3];
+
+    return "/%s/%s/%s".formatted(controllerTypeCode, controllerName, actionMethodName);
   }
 
   public int getIntParam(String paramName, int defaultValue) {

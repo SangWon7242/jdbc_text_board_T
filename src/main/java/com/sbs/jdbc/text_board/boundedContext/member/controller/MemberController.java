@@ -1,15 +1,31 @@
 package com.sbs.jdbc.text_board.boundedContext.member.controller;
 
+import com.sbs.jdbc.text_board.boundedContext.common.Controller;
 import com.sbs.jdbc.text_board.global.base.Rq;
 import com.sbs.jdbc.text_board.boundedContext.member.dto.Member;
 import com.sbs.jdbc.text_board.boundedContext.member.service.MemberService;
 import com.sbs.jdbc.text_board.container.Container;
 
-public class MemberController {
+public class MemberController implements Controller {
   private MemberService memberService;
 
   public MemberController() {
     memberService = Container.memberService;
+  }
+
+  @Override
+  public void performAction(Rq rq) {
+    if (rq.getActionPath().equals("/usr/member/join")) {
+      doJoin(rq);
+    } else if (rq.getActionPath().equals("/usr/member/login")) {
+      doLogin(rq);
+    } else if (rq.getActionPath().equals("/usr/member/logout")) {
+      doLogout(rq);
+    } else if (rq.getActionPath().equals("/usr/member/mypage")) {
+      showMyPage(rq);
+    } else {
+      System.out.println("존재하지 않는 명령어입니다.");
+    }
   }
 
   public void doJoin(Rq rq) {
