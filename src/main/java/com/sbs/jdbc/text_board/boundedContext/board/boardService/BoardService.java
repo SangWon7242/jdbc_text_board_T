@@ -4,6 +4,8 @@ import com.sbs.jdbc.text_board.boundedContext.board.dto.Board;
 import com.sbs.jdbc.text_board.boundedContext.board.repository.BoardRepository;
 import com.sbs.jdbc.text_board.container.Container;
 
+import java.util.List;
+
 public class BoardService {
   private BoardRepository boardRepository;
 
@@ -21,5 +23,13 @@ public class BoardService {
 
   public Board findByBoardCode(String boardCode) {
     return boardRepository.findByBoardCode(boardCode);
+  }
+
+  public List<Board> findAll() {
+    return boardRepository.findAll();
+  }
+
+  public Board findById(int id) {
+    return boardRepository.findById(id);
   }
 }

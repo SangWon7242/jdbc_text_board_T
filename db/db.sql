@@ -22,6 +22,9 @@ ALTER TABLE article ADD COLUMN memberId INT UNSIGNED NOT NULL AFTER updateDate;
 # 게시물 테이블에 hit 칼럼 추가
 ALTER TABLE article ADD COLUMN hit INT UNSIGNED NOT NULL AFTER content;
 
+# 게시물 테이블에 boardId 칼럼 추가
+ALTER TABLE article ADD COLUMN boardId INT UNSIGNED NOT NULL AFTER memberId;
+
 # 게시물 테스트 데이터 추가
 INSERT INTO article
 SET regDate = NOW(),
@@ -102,6 +105,9 @@ username = 'user3',
 password = '1234',
 name = '양금명';
 
+SELECT *
+FROM member;
+
 # Article 테이블과 Member 테이블을 inner join
 SELECT A.id,
 DATE_FORMAT(A.regDate, '%Y-%m-%d %H:%i:%s') AS regDate,
@@ -121,3 +127,6 @@ CREATE TABLE board (
 	`code` VARCHAR(50) NOT NULL UNIQUE COMMENT '게시판 코드(예: notice, free, qna)',
     `name` VARCHAR(100) NOT NULL UNIQUE COMMENT '게시판 이름(예: 공지사항, 자유게시판)'
 );
+
+SELECT *
+FROM board;

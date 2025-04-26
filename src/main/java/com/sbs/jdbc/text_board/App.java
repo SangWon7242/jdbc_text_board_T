@@ -32,6 +32,7 @@ public class App {
         String cmd = Container.sc.nextLine();
 
         if(cmd.equals("exit")) {
+          System.out.println("== 프로그램을 종료합니다. ==");
           break;
         }
 
@@ -52,7 +53,6 @@ public class App {
 
       }
     } finally {
-      System.out.println("== 프로그램을 종료합니다. ==");
       Container.sc.close();
     }
   }

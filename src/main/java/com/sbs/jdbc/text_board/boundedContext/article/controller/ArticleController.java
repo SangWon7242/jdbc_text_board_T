@@ -1,5 +1,7 @@
 package com.sbs.jdbc.text_board.boundedContext.article.controller;
 
+import com.sbs.jdbc.text_board.boundedContext.board.boardService.BoardService;
+import com.sbs.jdbc.text_board.boundedContext.board.dto.Board;
 import com.sbs.jdbc.text_board.boundedContext.common.Controller;
 import com.sbs.jdbc.text_board.boundedContext.member.dto.Member;
 import com.sbs.jdbc.text_board.global.base.Rq;
@@ -10,9 +12,11 @@ import com.sbs.jdbc.text_board.container.Container;
 import java.util.List;
 
 public class ArticleController implements Controller {
+  private BoardService boardService;
   private ArticleService articleService;
 
   public ArticleController() {
+    boardService = Container.boardService;
     articleService = Container.articleService;
   }
 
@@ -34,12 +38,39 @@ public class ArticleController implements Controller {
   }
 
   public void doWrite(Rq rq) {
-    if(rq.isLogouted()) {
+    if (rq.isLogouted()) {
       System.out.println("로그인 후 이용해주세요.");
       return;
     }
 
-    System.out.println("== 게시물 작성 ==");
+    // 게시판 목록 출력
+    List<Board> boards = boardService.findAll();
+
+    if (boards.isEmpty()) {
+      System.out.println("작성 가능한 게시판이 없습니다.");
+      return;
+    }
+
+    System.out.println("== 게시판 목록 ==");
+    System.out.println("번호 | 이름 | 코드");
+    System.out.println("-".repeat(30));
+
+    boards.forEach(
+        board -> System.out.printf("%d | %s | %s\n", board.getId(), board.getName(), board.getCode())
+    );
+
+    System.out.print("게시판 번호를 선택해주세요 : ");
+    int boardId = Integer.parseInt(Container.sc.nextLine().trim());
+
+    // 선택한 게시판 확인
+    Board selectedBoard = boardService.findById(boardId);
+
+    if (selectedBoard == null) {
+      System.out.println("존재하지 않는 게시판입니다.");
+      return;
+    }
+
+    System.out.printf("== '%s'에 게시물 작성 ==\n", selectedBoard.getName());
 
     System.out.print("제목 : ");
     String subject = Container.sc.nextLine();
@@ -60,7 +91,7 @@ public class ArticleController implements Controller {
     Member member = rq.getLoginedMember();
     int memberId = member.getId();
 
-    int id = articleService.write(memberId, subject, content);
+    int id = articleService.write(memberId, boardId, subject, content, 0);
 
     System.out.printf("%d번 게시물이 생성되었습니다.\n", id);
   }
@@ -84,7 +115,7 @@ public class ArticleController implements Controller {
   public void showDetail(Rq rq) {
     int id = rq.getIntParam("id", 0);
 
-    if(id == 0) {
+    if (id == 0) {
       System.out.println("id를 올바르게 입력해주세요.");
       return;
     }
@@ -93,7 +124,7 @@ public class ArticleController implements Controller {
 
     Article article = articleService.findById(id);
 
-    if(article == null) {
+    if (article == null) {
       System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
     }
 
@@ -108,14 +139,14 @@ public class ArticleController implements Controller {
   }
 
   public void doModify(Rq rq) {
-    if(rq.isLogouted()) {
+    if (rq.isLogouted()) {
       System.out.println("로그인 후 이용해주세요.");
       return;
     }
 
     int id = rq.getIntParam("id", 0);
 
-    if(id == 0) {
+    if (id == 0) {
       System.out.println("id를 올바르게 입력해주세요.");
       return;
     }
@@ -123,12 +154,12 @@ public class ArticleController implements Controller {
     Article article = articleService.findById(id);
     Member member = rq.getLoginedMember(); // 로그인한 사용자의 대한 정보를 세션에서 가져옴
 
-    if(article == null) {
+    if (article == null) {
       System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
       return;
     }
 
-    if(article.getMemberId() != member.getId()) {
+    if (article.getMemberId() != member.getId()) {
       System.out.println("해당 게시물에 대한 접근 권한이 없습니다.");
       return;
     }
@@ -146,7 +177,7 @@ public class ArticleController implements Controller {
   }
 
   public void doDelete(Rq rq) {
-    if(rq.isLogouted()) {
+    if (rq.isLogouted()) {
       System.out.println("로그인 후 이용해주세요.");
       return;
     }
@@ -161,12 +192,12 @@ public class ArticleController implements Controller {
     Article article = articleService.findById(id);
     Member member = rq.getLoginedMember();
 
-    if(article == null) {
+    if (article == null) {
       System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
       return;
     }
 
-    if(article.getMemberId() != member.getId()) {
+    if (article.getMemberId() != member.getId()) {
       System.out.println("해당 게시물에 대한 접근 권한이 없습니다.");
       return;
     }
