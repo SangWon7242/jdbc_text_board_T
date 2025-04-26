@@ -2,10 +2,8 @@ package com.sbs.jdbc.text_board;
 
 import com.sbs.jdbc.text_board.boundedContext.common.Controller;
 import com.sbs.jdbc.text_board.boundedContext.member.dto.Member;
-import com.sbs.jdbc.text_board.global.base.Rq;
-import com.sbs.jdbc.text_board.boundedContext.article.controller.ArticleController;
-import com.sbs.jdbc.text_board.boundedContext.member.controller.MemberController;
 import com.sbs.jdbc.text_board.container.Container;
+import com.sbs.jdbc.text_board.global.base.Rq;
 import com.sbs.jdbc.text_board.global.util.dbUtil.MysqlUtil;
 
 public class App {
@@ -65,6 +63,8 @@ public class App {
         switch (rq.getControllerName()) {
           case "article":
             return Container.articleController;
+          case "board":
+            return Container.boardController;
           case "member":
             return Container.memberController;
         }
