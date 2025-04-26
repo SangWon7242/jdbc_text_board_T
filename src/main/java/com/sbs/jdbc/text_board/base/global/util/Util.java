@@ -1,4 +1,4 @@
-package com.sbs.jdbc.text_board.base;
+package com.sbs.jdbc.text_board.base.global.util;
 
 import java.util.HashMap;
 import java.util.Map;

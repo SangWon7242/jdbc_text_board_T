@@ -1,6 +1,6 @@
 package com.sbs.jdbc.text_board.boundedContext.member.controller;
 
-import com.sbs.jdbc.text_board.base.Rq;
+import com.sbs.jdbc.text_board.base.global.Rq;
 import com.sbs.jdbc.text_board.boundedContext.member.dto.Member;
 import com.sbs.jdbc.text_board.boundedContext.member.service.MemberService;
 import com.sbs.jdbc.text_board.container.Container;
@@ -18,6 +18,11 @@ public class MemberController {
     String passwordConfirm;
     String name;
     Member member;
+
+    if(rq.isLogined()) {
+      System.out.println("로그아웃 후 이용해주세요.");
+      return;
+    }
 
     System.out.println("== 회원 가입 ==");
 
@@ -94,6 +99,11 @@ public class MemberController {
     String password;
     Member member;
 
+    if(rq.isLogined()) {
+      System.out.println("로그아웃 후 이용해주세요.");
+      return;
+    }
+
     System.out.println("== 로그인 ==");
 
     // 로그인 아이디 입력
@@ -134,6 +144,18 @@ public class MemberController {
       break;
     }
 
+    rq.setSessionAttr("loginedMember", member);
+
     System.out.printf("'%s'님 로그인 되었습니다.\n", member.getUsername());
+  }
+
+  public void doLogout(Rq rq) {
+    if(rq.isLogouted()) {
+      System.out.println("로그인 후 이용해주세요.");
+      return;
+    }
+
+    rq.removeSessionAttr("loginedMember");
+    System.out.println("로그아웃 되었습니다.");
   }
 }

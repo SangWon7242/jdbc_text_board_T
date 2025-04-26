@@ -1,6 +1,6 @@
 package com.sbs.jdbc.text_board;
 
-import com.sbs.jdbc.text_board.base.Rq;
+import com.sbs.jdbc.text_board.base.global.Rq;
 import com.sbs.jdbc.text_board.boundedContext.article.controller.ArticleController;
 import com.sbs.jdbc.text_board.boundedContext.member.controller.MemberController;
 import com.sbs.jdbc.text_board.container.Container;
@@ -56,7 +56,9 @@ public class App {
       memberController.doJoin(rq);
     } else if (rq.getUrlPath().equals("/usr/member/login")) {
       memberController.doLogin(rq);
-    } else if (rq.getUrlPath().equals("exit")) {
+    } else if (rq.getUrlPath().equals("/usr/member/logout")) {
+      memberController.doLogout(rq);
+    }  else if (rq.getUrlPath().equals("exit")) {
       System.out.println("프로그램을 종료합니다.");
       System.exit(0); // 프로그램 강제종룔
     } else {
