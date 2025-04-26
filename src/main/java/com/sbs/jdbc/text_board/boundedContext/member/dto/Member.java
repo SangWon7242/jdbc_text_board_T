@@ -14,16 +14,16 @@ import java.util.Map;
 @ToString
 public class Member {
   private final int id;
-  private LocalDateTime regDate;
-  private LocalDateTime updateDate;
+  private String regDate;
+  private String updateDate;
   private String username;
   private String password;
   private String name;
 
   public Member(Map<String, Object> memberMap) {
     this.id = (int) memberMap.get("id");
-    this.regDate = (LocalDateTime) memberMap.get("regDate");
-    this.updateDate = (LocalDateTime) memberMap.get("updateDate");
+    this.regDate = (String) memberMap.get("regDate");
+    this.updateDate = (String) memberMap.get("updateDate");
     this.username = (String) memberMap.get("username");
     this.password = (String) memberMap.get("password");
     this.name = (String) memberMap.get("name");

@@ -1,8 +1,8 @@
 package com.sbs.jdbc.text_board.boundedContext.article.repository;
 
 import com.sbs.jdbc.text_board.boundedContext.article.dto.Article;
-import com.sbs.jdbc.text_board.dbUtil.MysqlUtil;
-import com.sbs.jdbc.text_board.dbUtil.SecSql;
+import com.sbs.jdbc.text_board.global.util.dbUtil.MysqlUtil;
+import com.sbs.jdbc.text_board.global.util.dbUtil.SecSql;
 
 import java.util.ArrayList;
 import java.util.List;

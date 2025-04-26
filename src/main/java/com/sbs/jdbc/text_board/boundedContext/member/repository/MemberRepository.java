@@ -1,8 +1,8 @@
 package com.sbs.jdbc.text_board.boundedContext.member.repository;
 
 import com.sbs.jdbc.text_board.boundedContext.member.dto.Member;
-import com.sbs.jdbc.text_board.dbUtil.MysqlUtil;
-import com.sbs.jdbc.text_board.dbUtil.SecSql;
+import com.sbs.jdbc.text_board.global.util.dbUtil.MysqlUtil;
+import com.sbs.jdbc.text_board.global.util.dbUtil.SecSql;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +17,13 @@ public class MemberRepository {
 
   public Member findByUsername(String username) {
     SecSql sql = new SecSql();
-    sql.append("SELECT *");
-    sql.append("FROM `member`");
+    sql.append("SELECT M.id,");
+    sql.append("DATE_FORMAT(M.regDate, '%Y-%m-%d %H:%i:%s') AS regDate,");
+    sql.append("DATE_FORMAT(M.updateDate, '%Y-%m-%d %H:%i:%s') AS updateDate,");
+    sql.append("M.username,");
+    sql.append("M.password,");
+    sql.append("M.name");
+    sql.append("FROM `member` AS M");
     sql.append("WHERE username = ?", username);
 
     Map<String, Object> memberMap = MysqlUtil.selectRow(sql);

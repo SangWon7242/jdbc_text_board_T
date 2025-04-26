@@ -1,6 +1,6 @@
 package com.sbs.jdbc.text_board.boundedContext.member.controller;
 
-import com.sbs.jdbc.text_board.base.global.Rq;
+import com.sbs.jdbc.text_board.global.base.Rq;
 import com.sbs.jdbc.text_board.boundedContext.member.dto.Member;
 import com.sbs.jdbc.text_board.boundedContext.member.service.MemberService;
 import com.sbs.jdbc.text_board.container.Container;
@@ -144,7 +144,7 @@ public class MemberController {
       break;
     }
 
-    rq.setSessionAttr("loginedMember", member);
+    rq.login(member);
 
     System.out.printf("'%s'님 로그인 되었습니다.\n", member.getUsername());
   }
@@ -155,7 +155,23 @@ public class MemberController {
       return;
     }
 
-    rq.removeSessionAttr("loginedMember");
+    rq.logout();
+
     System.out.println("로그아웃 되었습니다.");
+  }
+
+  public void showMyPage(Rq rq) {
+    if(rq.isLogouted()) {
+      System.out.println("로그인 후 이용해주세요.");
+      return;
+    }
+
+    Member member = rq.getLoginedMember();
+
+    System.out.printf("== '%s' 회원의 정보 ==\n", member.getUsername());
+    System.out.printf("아이디 : %s\n", member.getUsername());
+    System.out.printf("가입 날짜 : %s\n", member.getRegDate());
+    System.out.printf("수정 날짜 : %s\n", member.getUpdateDate());
+    System.out.printf("이름 : %s\n", member.getName());
   }
 }

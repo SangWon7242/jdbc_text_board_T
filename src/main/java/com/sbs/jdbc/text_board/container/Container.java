@@ -1,6 +1,6 @@
 package com.sbs.jdbc.text_board.container;
 
-import com.sbs.jdbc.text_board.base.global.session.Session;
+import com.sbs.jdbc.text_board.global.session.Session;
 import com.sbs.jdbc.text_board.boundedContext.article.controller.ArticleController;
 import com.sbs.jdbc.text_board.boundedContext.article.repository.ArticleRepository;
 import com.sbs.jdbc.text_board.boundedContext.article.service.ArticleService;

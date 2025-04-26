@@ -1,7 +1,8 @@
-package com.sbs.jdbc.text_board.base.global;
+package com.sbs.jdbc.text_board.global.base;
 
-import com.sbs.jdbc.text_board.base.global.session.Session;
-import com.sbs.jdbc.text_board.base.global.util.Util;
+import com.sbs.jdbc.text_board.boundedContext.member.dto.Member;
+import com.sbs.jdbc.text_board.global.session.Session;
+import com.sbs.jdbc.text_board.global.util.Util;
 import com.sbs.jdbc.text_board.container.Container;
 import lombok.Getter;
 
@@ -57,6 +58,14 @@ public class Rq {
     return !isLogined();
   }
 
+  public void login(Member member) {
+    setSessionAttr(loginedMember, member);
+  }
+
+  public void logout() {
+    removeSessionAttr(loginedMember);
+  }
+
   public Object getSessionAttr(String attrName) {
     return session.getAttribute(attrName);
   }
@@ -71,5 +80,9 @@ public class Rq {
 
   public void removeSessionAttr(String attrName) {
     session.removeAttribute(attrName);
+  }
+
+  public Member getLoginedMember() {
+    return (Member) getSessionAttr(loginedMember);
   }
 }

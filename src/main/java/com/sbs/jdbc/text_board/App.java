@@ -1,10 +1,11 @@
 package com.sbs.jdbc.text_board;
 
-import com.sbs.jdbc.text_board.base.global.Rq;
+import com.sbs.jdbc.text_board.boundedContext.member.dto.Member;
+import com.sbs.jdbc.text_board.global.base.Rq;
 import com.sbs.jdbc.text_board.boundedContext.article.controller.ArticleController;
 import com.sbs.jdbc.text_board.boundedContext.member.controller.MemberController;
 import com.sbs.jdbc.text_board.container.Container;
-import com.sbs.jdbc.text_board.dbUtil.MysqlUtil;
+import com.sbs.jdbc.text_board.global.util.dbUtil.MysqlUtil;
 
 public class App {
   private static boolean isDevMode() {
@@ -18,10 +19,18 @@ public class App {
 
     try {
       while (true) {
-        System.out.print("명령어) ");
+        Rq rq = new Rq();
+
+        Member member = rq.getLoginedMember();
+
+        String promptName = "명령어";
+        if(member != null) {
+          promptName = member.getUsername();
+        }
+
+        System.out.printf("%s) ", promptName);
         String cmd = Container.sc.nextLine();
 
-        Rq rq = new Rq();
         rq.setCommand(cmd);
 
         // DB 세팅
@@ -58,7 +67,9 @@ public class App {
       memberController.doLogin(rq);
     } else if (rq.getUrlPath().equals("/usr/member/logout")) {
       memberController.doLogout(rq);
-    }  else if (rq.getUrlPath().equals("exit")) {
+    } else if (rq.getUrlPath().equals("/usr/member/mypage")) {
+      memberController.showMyPage(rq);
+    } else if (rq.getUrlPath().equals("exit")) {
       System.out.println("프로그램을 종료합니다.");
       System.exit(0); // 프로그램 강제종룔
     } else {

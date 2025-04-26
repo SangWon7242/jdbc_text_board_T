@@ -1,4 +1,4 @@
-package com.sbs.jdbc.text_board.dbUtil;
+package com.sbs.jdbc.text_board.global.util.dbUtil;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
