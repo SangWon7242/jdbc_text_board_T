@@ -18,11 +18,17 @@ public class Board extends BaseDto {
   private String code;
   private String name;
 
+  private int articleCount;
+
   public Board(Map<String, Object> boardMap) {
     this.id = (int) boardMap.get("id");
     this.regDate = (LocalDateTime) boardMap.get("regDate");
     this.updateDate = (LocalDateTime) boardMap.get("updateDate");
     this.code = (String) boardMap.get("code");
     this.name = (String) boardMap.get("name");
+
+    if(boardMap.get("articleCount") != null) {
+      this.articleCount = (int) boardMap.get("articleCount");
+    }
   }
 }

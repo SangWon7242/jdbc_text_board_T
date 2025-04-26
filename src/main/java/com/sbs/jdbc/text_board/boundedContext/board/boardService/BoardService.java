@@ -32,4 +32,8 @@ public class BoardService {
   public Board findById(int id) {
     return boardRepository.findById(id);
   }
+
+  public List<Board> findAllWithArticleCount() {
+    return boardRepository.findAllWithArticleCount();
+  }
 }

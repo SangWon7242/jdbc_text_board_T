@@ -78,4 +78,26 @@ public class BoardRepository {
 
     return new Board(boardMap);
   }
+
+  public List<Board> findAllWithArticleCount() {
+    SecSql sql = new SecSql();
+    sql.append("SELECT B.*,");
+    sql.append("COUNT(A.id) AS articleCount");  // 게시물 수 카운트
+    sql.append("FROM board AS B");
+    sql.append("LEFT JOIN article AS A");  // LEFT JOIN으로 게시물이 없는 게시판도 포함
+    sql.append("ON B.id = A.boardId");
+    sql.append("GROUP BY B.id");  // 게시판별 그룹화
+    sql.append("ORDER BY B.id ASC");
+
+    List<Map<String, Object>> boardListMap = MysqlUtil.selectRows(sql);
+
+    if(boardListMap.isEmpty()) return new ArrayList<>();
+
+    List<Board> boards = new ArrayList<>();
+    for(Map<String, Object> boardMap : boardListMap) {
+      boards.add(new Board(boardMap));
+    }
+
+    return boards;
+  }
 }

@@ -175,10 +175,12 @@ public class ArticleController implements Controller {
 
     if (article == null) {
       System.out.printf("%d번 게시물은 존재하지 않습니다.\n", id);
+      return;
     }
 
     System.out.printf("== %d번 게시물 상세보기 ==\n", id);
     System.out.printf("번호 : %d\n", article.getId());
+    System.out.printf("게시판 : %s\n", article.getBoardName());
     System.out.printf("작성자 : %s\n", article.getWriterName());
     System.out.printf("작성날짜 : %s\n", article.getFormatRegDate());
     System.out.printf("수정날짜 : %s\n", article.getFormatUpdateDate());
