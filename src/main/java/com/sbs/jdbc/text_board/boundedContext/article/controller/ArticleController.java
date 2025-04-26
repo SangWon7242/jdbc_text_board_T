@@ -56,10 +56,10 @@ public class ArticleController {
     }
 
     System.out.println("== 게시물 리스트 ==");
-    System.out.println("제목 | 내용 | 작성자");
+    System.out.println("번호 | 제목 | 작성 날짜 | 작성자 | 조회수");
     articles.forEach(
         article
-            -> System.out.printf("%d | %s | %s\n", article.getId(), article.getSubject(), article.getWriterName())
+            -> System.out.printf("%d | %s | %s | %s | %d\n", article.getId(), article.getSubject(), article.getRegDate(), article.getWriterName(), article.getHit())
     );
   }
 
@@ -70,6 +70,8 @@ public class ArticleController {
       System.out.println("id를 올바르게 입력해주세요.");
       return;
     }
+
+    articleService.increaseHit(id);
 
     Article article = articleService.findById(id);
 
@@ -82,6 +84,7 @@ public class ArticleController {
     System.out.printf("작성자 : %s\n", article.getWriterName());
     System.out.printf("작성날짜 : %s\n", article.getRegDate());
     System.out.printf("수정날짜 : %s\n", article.getUpdateDate());
+    System.out.printf("조회수 : %d\n", article.getHit());
     System.out.printf("제목 : %s\n", article.getSubject());
     System.out.printf("내용 : %s\n", article.getContent());
   }

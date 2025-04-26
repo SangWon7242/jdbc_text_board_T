@@ -19,7 +19,8 @@ CREATE TABLE article (
 # 게시물 테이블에 memberId 칼럼 추가
 ALTER TABLE article ADD COLUMN memberId INT UNSIGNED NOT NULL AFTER updateDate;
 
-DESC article;
+# 게시물 테이블에 hit 칼럼 추가
+ALTER TABLE article ADD COLUMN hit INT UNSIGNED NOT NULL AFTER content;
 
 # 게시물 테스트 데이터 추가
 INSERT INTO article
@@ -27,28 +28,32 @@ SET regDate = NOW(),
 updateDate = NOW(),
 memberId = 1,
 subject = '제목1',
-content = '내용1';
+content = '내용1',
+hit = 10;
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
 memberId = 1,
 subject = '제목2',
-content = '내용2';
+content = '내용2',
+hit = 0;
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
 memberId = 1,
 subject = '제목3',
-content = '내용3';
+content = '내용3',
+hit = 30;
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
 memberId = 2,
 subject = '제목4',
-content = '내용4';
+content = '내용4',
+hit = 3;
 
 # 게시물 데이터 조회
 SELECT *
@@ -97,9 +102,7 @@ username = 'user3',
 password = '1234',
 name = '양금명';
 
-SELECT * FROM `member`;
-
-# 작성자 이름으로 테이블 조회
+# Article 테이블과 Member 테이블을 inner join
 SELECT A.id,
 DATE_FORMAT(A.regDate, '%Y-%m-%d %H:%i:%s') AS regDate,
 DATE_FORMAT(A.updateDate, '%Y-%m-%d %H:%i:%s') AS updateDate,

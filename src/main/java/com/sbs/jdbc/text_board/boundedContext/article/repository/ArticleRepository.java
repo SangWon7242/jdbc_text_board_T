@@ -37,6 +37,7 @@ public class ArticleRepository {
     sql.append("A.memberId,");
     sql.append("A.subject,");
     sql.append("A.content,");
+    sql.append("A.hit,");
     sql.append("M.name AS writerName");
     sql.append("FROM article AS A");
     sql.append("INNER JOIN `member` AS M");
@@ -62,6 +63,7 @@ public class ArticleRepository {
     sql.append("A.memberId,");
     sql.append("A.subject,");
     sql.append("A.content,");
+    sql.append("A.hit,");
     sql.append("M.name AS writerName");
     sql.append("FROM article AS A");
     sql.append("INNER JOIN `member` AS M");
@@ -94,5 +96,14 @@ public class ArticleRepository {
     sql.append("WHERE id = ?", id);
 
     MysqlUtil.delete(sql);
+  }
+
+  public void increaseHit(int id) {
+    SecSql sql = new SecSql();
+    sql.append("UPDATE article");
+    sql.append("SET hit = hit + 1");
+    sql.append("WHERE id = ?", id);
+
+    MysqlUtil.update(sql);
   }
 }

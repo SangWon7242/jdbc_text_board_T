@@ -18,9 +18,9 @@ public class Article {
   private int memberId;
   private String subject;
   private String content;
+  private int hit;
 
   private String writerName;
-
 
   public Article(Map<String, Object> articleMap) {
     this.id = (int) articleMap.get("id");
@@ -29,6 +29,7 @@ public class Article {
     this.memberId = (int) articleMap.get("memberId");
     this.subject = (String) articleMap.get("subject");
     this.content = (String) articleMap.get("content");
+    this.hit = (int) articleMap.get("hit");
 
     if(articleMap.get("writerName") != null) {
       this.writerName = (String) articleMap.get("writerName");

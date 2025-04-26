@@ -32,4 +32,8 @@ public class ArticleService {
   public void delete(int id) {
     articleRepository.delete(id);
   }
+
+  public void increaseHit(int id) {
+    articleRepository.increaseHit(id);
+  }
 }
